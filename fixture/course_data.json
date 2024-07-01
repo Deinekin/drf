@@ -1,0 +1,29 @@
+[
+  {
+    "model": "materials.course",
+    "pk": 2,
+    "fields": {
+      "name": "maths analyses",
+      "description": "hhhh",
+      "preview_image": ""
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 3,
+    "fields": {
+      "name": "maths",
+      "description": "aaaa",
+      "preview_image": ""
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 4,
+    "fields": {
+      "name": "geom",
+      "description": "bbbb",
+      "preview_image": ""
+    }
+  }
+]

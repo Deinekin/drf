@@ -1,0 +1,22 @@
+[
+  {
+    "model": "materials.lesson",
+    "pk": 3,
+    "fields": {
+      "name": "smth",
+      "description": "2",
+      "preview_image": "",
+      "course": 2
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 4,
+    "fields": {
+      "name": "maths analyses",
+      "description": "hhhh",
+      "preview_image": "",
+      "course": 2
+    }
+  }
+]

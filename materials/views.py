@@ -11,6 +11,11 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return CourseDetailSerializer
+        return CourseSerializer
+
 
 class LessonCreateAPIView(CreateAPIView):
     serializer_class = LessonSerializer
@@ -32,4 +37,4 @@ class LessonRetrieveAPIView(RetrieveAPIView):
 
 
 class LessonDestroyAPIView(DestroyAPIView):
-    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
