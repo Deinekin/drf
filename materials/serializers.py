@@ -10,7 +10,7 @@ class LessonSerializer(ModelSerializer):
 
 
 class CourseSerializer(ModelSerializer):
-    lessons = LessonSerializer(source="lesson_set", many=True)
+    lessons = LessonSerializer(source="lesson_set", many=True, read_only=True)
 
     class Meta:
         model = Course
