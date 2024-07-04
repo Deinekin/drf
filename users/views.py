@@ -5,11 +5,13 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      UpdateAPIView)
 from rest_framework.permissions import AllowAny
 
+from materials.services import create_stripe_price, create_session_stripe
 from users.models import Payment, User
 from users.serializers import PaymentSerializer, UserSerializer
 
 
 class PaymentListAPIView(ListAPIView):
+    """ Getting list of payments. """
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
@@ -22,10 +24,22 @@ class PaymentListAPIView(ListAPIView):
 
 
 class PaymentCreateAPIView(CreateAPIView):
+    """ Create payment. """
     serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        price = create_stripe_price(payment.sum)
+        session_id, payment_link = create_session_stripe(price)
+        payment.session_id = session_id
+        payment.url = payment_link
+        payment.save()
 
 
 class UserCreateAPIView(CreateAPIView):
+    """ Create user. """
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
@@ -36,19 +50,23 @@ class UserCreateAPIView(CreateAPIView):
 
 
 class UserListAPIView(ListAPIView):
+    """ Get list of users. """
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserDetailAPIView(RetrieveAPIView):
+    """ Detail watch of user. """
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserUpdateAPIView(UpdateAPIView):
+    """ Updating user. """
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserDestroyAPIView(DestroyAPIView):
+    """ Delete user. """
     serializer_class = UserSerializer

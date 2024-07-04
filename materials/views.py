@@ -14,6 +14,7 @@ from rest_framework.response import Response
 
 
 class CourseViewSet(ModelViewSet):
+    """ ViewSet of Course."""
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CustomPagination
@@ -39,6 +40,7 @@ class CourseViewSet(ModelViewSet):
 
 
 class LessonCreateAPIView(CreateAPIView):
+    """ Class creating."""
     serializer_class = LessonSerializer
 
     permission_classes = (~IsModerator, IsAuthenticated,)
@@ -50,30 +52,35 @@ class LessonCreateAPIView(CreateAPIView):
 
 
 class LessonListAPIView(ListAPIView):
+    """ Getting list of lessons"""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     pagination_class = CustomPagination
 
 
 class LessonUpdateAPIView(UpdateAPIView):
+    """ Update lesson."""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsModerator | IsOwner, IsAuthenticated,)
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
+    """ Detail watch lesson."""
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsModerator | IsOwner, IsAuthenticated,)
 
 
 class LessonDestroyAPIView(DestroyAPIView):
+    """ Delete lesson."""
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsOwner | ~IsModerator)
     queryset = Lesson.objects.all()
 
 
 class SubscriptionCreateAPIView(APIView):
+    """ Create/Delete subscription."""
     serializer_class = SubscriptionSerializer
     permission_classes = (IsAuthenticated,)
 
