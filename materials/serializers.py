@@ -8,7 +8,7 @@ class LessonSerializer(ModelSerializer):
     class Meta:
         model = Lesson
         fields = "__all__"
-        validators = [LinkValidator(link='video_link')]
+        validators = [LinkValidator(link="video_link")]
 
 
 class CourseSerializer(ModelSerializer):
@@ -30,7 +30,13 @@ class CourseSerializer(ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("name", "description", "quantity_of_lessons", "lessons", "is_subscribe")
+        fields = (
+            "name",
+            "description",
+            "quantity_of_lessons",
+            "lessons",
+            "is_subscribe",
+        )
 
 
 class CourseDetailSerializer(ModelSerializer):
