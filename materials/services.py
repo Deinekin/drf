@@ -1,11 +1,12 @@
 import stripe
+
 from config.settings import STRIPE_API_KEY
 
 stripe.api_key = STRIPE_API_KEY
 
 
 def create_stripe_price(amount):
-    """ Create price at stripe. """
+    """Create price at stripe."""
 
     return stripe.Price.create(
         currency="usd",
@@ -15,7 +16,7 @@ def create_stripe_price(amount):
 
 
 def create_session_stripe(price):
-    """ Create payment session at stripe. """
+    """Create payment session at stripe."""
 
     session = stripe.checkout.Session.create(
         success_url="http://127.0.0.1:8000/",

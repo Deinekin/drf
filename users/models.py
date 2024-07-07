@@ -58,7 +58,9 @@ class Payment(models.Model):
         default="card",
         verbose_name="Способ оплаты",
     )
-    session_id = models.CharField(max_length=255, **NULLABLE, verbose_name="Номер сессии")
+    session_id = models.CharField(
+        max_length=255, **NULLABLE, verbose_name="Номер сессии"
+    )
     url = models.URLField(max_length=400, **NULLABLE, verbose_name="Ссылка на оплату")
 
     def __str__(self):

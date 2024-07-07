@@ -1,20 +1,31 @@
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
-from rest_framework.viewsets import ModelViewSet
+from django.shortcuts import get_object_or_404
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+
 from materials.models import Course, Lesson, Subscription
 from materials.paginations import CustomPagination
-from materials.serializers import (CourseDetailSerializer, CourseSerializer,
-                                   LessonSerializer, SubscriptionSerializer)
+from materials.serializers import (
+    CourseDetailSerializer,
+    CourseSerializer,
+    LessonSerializer,
+    SubscriptionSerializer,
+)
+from materials.tasks import send_course_change
 from users.permissions import IsModerator, IsOwner
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 
 
 class CourseViewSet(ModelViewSet):
-    """ ViewSet of Course."""
+    """ViewSet of Course."""
+
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CustomPagination
@@ -29,6 +40,11 @@ class CourseViewSet(ModelViewSet):
         course.owner = self.request.user
         course.save()
 
+    def perform_update(self, serializer):
+        course = serializer.save(owner=self.request.user)
+        course.save()
+        send_course_change.delay(course.pk)
+
     def get_permissions(self):
         if self.action == "create":
             self.permission_classes = (~IsModerator,)
@@ -40,10 +56,14 @@ class CourseViewSet(ModelViewSet):
 
 
 class LessonCreateAPIView(CreateAPIView):
-    """ Class creating."""
+    """Class creating."""
+
     serializer_class = LessonSerializer
 
-    permission_classes = (~IsModerator, IsAuthenticated,)
+    permission_classes = (
+        ~IsModerator,
+        IsAuthenticated,
+    )
 
     def perform_create(self, serializer):
         lesson = serializer.save()
@@ -52,35 +72,46 @@ class LessonCreateAPIView(CreateAPIView):
 
 
 class LessonListAPIView(ListAPIView):
-    """ Getting list of lessons"""
+    """Getting list of lessons"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     pagination_class = CustomPagination
 
 
 class LessonUpdateAPIView(UpdateAPIView):
-    """ Update lesson."""
+    """Update lesson."""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (IsModerator | IsOwner, IsAuthenticated,)
+    permission_classes = (
+        IsModerator | IsOwner,
+        IsAuthenticated,
+    )
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
-    """ Detail watch lesson."""
+    """Detail watch lesson."""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (IsModerator | IsOwner, IsAuthenticated,)
+    permission_classes = (
+        IsModerator | IsOwner,
+        IsAuthenticated,
+    )
 
 
 class LessonDestroyAPIView(DestroyAPIView):
-    """ Delete lesson."""
+    """Delete lesson."""
+
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsOwner | ~IsModerator)
     queryset = Lesson.objects.all()
 
 
 class SubscriptionCreateAPIView(APIView):
-    """ Create/Delete subscription."""
+    """Create/Delete subscription."""
+
     serializer_class = SubscriptionSerializer
     permission_classes = (IsAuthenticated,)
 

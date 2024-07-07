@@ -1,17 +1,22 @@
 from django_filters import rest_framework as filters
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import AllowAny
 
-from materials.services import create_stripe_price, create_session_stripe
+from materials.services import create_session_stripe, create_stripe_price
 from users.models import Payment, User
 from users.serializers import PaymentSerializer, UserSerializer
 
 
 class PaymentListAPIView(ListAPIView):
-    """ Getting list of payments. """
+    """Getting list of payments."""
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
@@ -24,7 +29,8 @@ class PaymentListAPIView(ListAPIView):
 
 
 class PaymentCreateAPIView(CreateAPIView):
-    """ Create payment. """
+    """Create payment."""
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     permission_classes = [AllowAny]
@@ -39,7 +45,8 @@ class PaymentCreateAPIView(CreateAPIView):
 
 
 class UserCreateAPIView(CreateAPIView):
-    """ Create user. """
+    """Create user."""
+
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
@@ -50,23 +57,27 @@ class UserCreateAPIView(CreateAPIView):
 
 
 class UserListAPIView(ListAPIView):
-    """ Get list of users. """
+    """Get list of users."""
+
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserDetailAPIView(RetrieveAPIView):
-    """ Detail watch of user. """
+    """Detail watch of user."""
+
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserUpdateAPIView(UpdateAPIView):
-    """ Updating user. """
+    """Updating user."""
+
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class UserDestroyAPIView(DestroyAPIView):
-    """ Delete user. """
+    """Delete user."""
+
     serializer_class = UserSerializer
